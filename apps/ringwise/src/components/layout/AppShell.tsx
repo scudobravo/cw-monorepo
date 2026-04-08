@@ -58,32 +58,26 @@ export default function AppShell({ children, version }: Props) {
 
         {/* Logo */}
         <div className="sidebar-logo">
-          <div className="logo-mark">
-            <Radio size={12} />
+          <div className="logo-mark" style={{ background: "rgba(16,185,129,0.15)", border: "1px solid rgba(16,185,129,0.3)" }}>
+            <Radio size={12} style={{ color: "#10b981" }} />
           </div>
           <div>
-            <div className="logo-name">Cue</div>
+            <div className="logo-name">RingWise</div>
             {version && <div className="logo-version">v{version}</div>}
           </div>
         </div>
 
-        {/* Product badge */}
-        <div style={{ padding: "8px 8px 0" }}>
-          <div
-            style={{
-              padding: "6px 10px",
-              background: "var(--accent-dim)",
-              border: "1px solid var(--accent-border)",
-              borderRadius: "var(--r-md)",
-              display: "flex",
-              alignItems: "center",
-              gap: "6px",
-            }}
-          >
-            <span className="dot dot-accent dot-pulse" style={{ flexShrink: 0 }} />
-            <span style={{ fontSize: "11px", fontWeight: 600, color: "var(--accent-light)" }}>
-              Sales AI
-            </span>
+        {/* Product label */}
+        <div style={{ padding: "6px 12px 0" }}>
+          <div style={{
+            fontSize: "10px",
+            color: "#10b981",
+            fontWeight: 600,
+            letterSpacing: "0.5px",
+            textTransform: "uppercase",
+            opacity: 0.8,
+          }}>
+            Sales AI
           </div>
         </div>
 
@@ -192,11 +186,11 @@ export default function AppShell({ children, version }: Props) {
           <button
             className="stealth-btn"
             onClick={handleQuit}
-            title="Quit Cue"
+            title="Quit RingWise"
             style={{ color: "var(--text-3)" }}
           >
             <Power size={14} />
-            <span>Quit Cue</span>
+            <span>Quit RingWise</span>
           </button>
         </div>
       </aside>
