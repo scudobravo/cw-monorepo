@@ -9,22 +9,26 @@ permissions:
 
 jobs:
   build-devoracle:
-    name: DevOracle — ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
+    name: DevOracle — ${{ matrix.platform }}
+    runs-on: ${{ matrix.runner }}
     strategy:
       matrix:
         include:
-          - os: macos-latest
-            target: aarch64-apple-darwin
-          - os: macos-13
-            target: x86_64-apple-darwin
-          - os: windows-latest
+          - platform: macOS (universal)
+            runner: macos-latest
+            target: universal-apple-darwin
+            args: --target universal-apple-darwin
+          - platform: Windows
+            runner: windows-latest
             target: x86_64-pc-windows-msvc
+            args: --target x86_64-pc-windows-msvc
     steps:
       - uses: actions/checkout@v4
+
       - uses: dtolnay/rust-toolchain@stable
         with:
-          targets: ${{ matrix.target }}
+          targets: aarch64-apple-darwin,x86_64-apple-darwin,x86_64-pc-windows-msvc
+
       - uses: pnpm/action-setup@v4
         with:
           version: 9
@@ -46,6 +50,11 @@ jobs:
           VITE_BACKEND_URL: ${{ secrets.VITE_BACKEND_URL }}
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         with:
           tagName: ${{ github.ref_name }}
           releaseName: "DevOracle ${{ github.ref_name }}"
@@ -53,25 +62,29 @@ jobs:
           releaseDraft: true
           prerelease: false
           projectPath: apps/devoracle
-          args: --target ${{ matrix.target }}
+          args: ${{ matrix.args }}
 
   build-ringwise:
-    name: RingWise — ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
+    name: RingWise — ${{ matrix.platform }}
+    runs-on: ${{ matrix.runner }}
     strategy:
       matrix:
         include:
-          - os: macos-latest
-            target: aarch64-apple-darwin
-          - os: macos-13
-            target: x86_64-apple-darwin
-          - os: windows-latest
+          - platform: macOS (universal)
+            runner: macos-latest
+            target: universal-apple-darwin
+            args: --target universal-apple-darwin
+          - platform: Windows
+            runner: windows-latest
             target: x86_64-pc-windows-msvc
+            args: --target x86_64-pc-windows-msvc
     steps:
       - uses: actions/checkout@v4
+
       - uses: dtolnay/rust-toolchain@stable
         with:
-          targets: ${{ matrix.target }}
+          targets: aarch64-apple-darwin,x86_64-apple-darwin,x86_64-pc-windows-msvc
+
       - uses: pnpm/action-setup@v4
         with:
           version: 9
@@ -93,6 +106,11 @@ jobs:
           VITE_BACKEND_URL: ${{ secrets.VITE_BACKEND_URL }}
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         with:
           tagName: ${{ github.ref_name }}
           releaseName: "RingWise ${{ github.ref_name }}"
@@ -100,4 +118,4 @@ jobs:
           releaseDraft: true
           prerelease: false
           projectPath: apps/ringwise
-          args: --target ${{ matrix.target }}
+          args: ${{ matrix.args }}
