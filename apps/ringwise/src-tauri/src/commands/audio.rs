@@ -9,6 +9,6 @@ pub fn list_audio_devices() -> Result<Vec<AudioDevice>, AppError> {
 #[tauri::command]
 pub fn test_audio() -> Result<bool, AppError> {
     // TODO: Record a brief audio sample and verify it's not silent
-    let devices = list_input_devices().map_err(|e| AppError::from(e))?;
+    let devices = list_input_devices().map_err(AppError::from)?;
     Ok(!devices.is_empty())
 }
