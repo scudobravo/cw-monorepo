@@ -1,5 +1,5 @@
 /**
- * HTTP client for the Savant NestJS backend.
+ * HTTP client for the DevOracle NestJS backend.
  * All requests are authenticated with the Supabase JWT stored in authStore.
  */
 

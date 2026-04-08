@@ -71,7 +71,7 @@ export default function AuthPage() {
               letterSpacing: '-0.4px',
             }}
           >
-            Savant
+            DevOracle
           </span>
         </div>
 
@@ -83,8 +83,8 @@ export default function AuthPage() {
             </div>
             <div className="page-subtitle" style={{ marginTop: '4px' }}>
               {mode === 'sign_in'
-                ? 'Sign in to your Savant account'
-                : 'Start your free Savant account'}
+                ? 'Sign in to your DevOracle account'
+                : 'Start your free DevOracle account'}
             </div>
           </div>
 

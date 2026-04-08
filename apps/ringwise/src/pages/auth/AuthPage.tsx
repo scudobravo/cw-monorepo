@@ -63,7 +63,7 @@ export default function AuthPage() {
               letterSpacing: '-0.4px',
             }}
           >
-            Cue
+            RingWise
           </span>
         </div>
 
@@ -75,8 +75,8 @@ export default function AuthPage() {
             </div>
             <div className="page-subtitle" style={{ marginTop: '4px' }}>
               {mode === 'sign_in'
-                ? 'Sign in to your Cue account'
-                : 'Start closing more deals with Cue'}
+                ? 'Sign in to your RingWise account'
+                : 'Start closing more deals with RingWise'}
             </div>
           </div>
 
