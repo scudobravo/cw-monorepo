@@ -1,6 +1,6 @@
 //! Read active browser tab URL (macOS via AppleScript). Used for LeetCode detection.
 
-#[cfg(target_os = "macos")]
+#[allow(dead_code)]
 fn is_coding_problem_url(url: &str) -> bool {
     let u = url.trim().to_lowercase();
     u.contains("leetcode.com/problems/")
