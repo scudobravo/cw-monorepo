@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import { Clock, Phone, TrendingUp, MessageSquare, Sparkles, Loader2 } from "lucide-react";
 import AppShell from "../../components/layout/AppShell";
 import { useAuthStore } from "../../stores/authStore";
-import { listSessions, getTopQuestions, type SessionRow } from "../../lib/api";
+import { type SessionRow } from "../../lib/api";
+import { listSessionsDirect, getTopQuestionsDirect } from "../../lib/supabase";
 
 const PRODUCT_FILTER = "RingWise" as const;
 
@@ -50,19 +51,18 @@ export default function HistoryPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const t = token();
-    if (!t) {
+    if (!token()) {
       setLoading(false);
       return;
     }
 
     setError(null);
     Promise.all([
-      listSessions(t, { product: PRODUCT_FILTER }).catch((e) => {
+      listSessionsDirect(PRODUCT_FILTER).catch((e) => {
         setError(String(e));
         return [] as SessionRow[];
       }),
-      getTopQuestions(t, { product: "RingWise", limit: 8 }).catch(() => []),
+      getTopQuestionsDirect(PRODUCT_FILTER, 8).catch(() => []),
     ]).then(([s, q]) => {
       setSessions(s);
       setQuestions(q as QuestionRow[]);

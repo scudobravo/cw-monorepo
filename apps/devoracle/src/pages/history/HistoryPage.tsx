@@ -15,13 +15,12 @@ import {
 import AppShell from "../../components/layout/AppShell";
 import { useAuthStore } from "../../stores/authStore";
 import {
-  listSessions,
-  getTopQuestions,
   getDrillsStats,
   parseVocalCoachingScorecard,
   type DrillStats,
   type SessionRow,
 } from "../../lib/api";
+import { listSessionsDirect, getTopQuestionsDirect } from "../../lib/supabase";
 
 const PRODUCT_FILTER = "DevOracle" as const;
 
@@ -90,11 +89,11 @@ export default function HistoryPage() {
 
     setError(null);
     Promise.all([
-      listSessions(t, { product: PRODUCT_FILTER }).catch((e) => {
+      listSessionsDirect(PRODUCT_FILTER).catch((e) => {
         setError(String(e));
         return [] as SessionRow[];
       }),
-      getTopQuestions(t, { product: "DevOracle", limit: 8 }).catch(() => []),
+      getTopQuestionsDirect(PRODUCT_FILTER, 8).catch(() => []),
       getDrillsStats(t).catch(() => null),
     ]).then(([s, q, d]) => {
       setSessions(s);
