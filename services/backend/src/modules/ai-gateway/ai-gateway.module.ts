@@ -16,11 +16,13 @@ import { ProblemsModule } from '../problems/problems.module';
 import { CompaniesModule } from '../companies/companies.module';
 import { InterviewScorecardService } from './interview-scorecard.service';
 import { InterviewScorecardController } from './interview-scorecard.controller';
+import { UsageModule } from '../usage/usage.module';
 
 @Module({
   imports: [
     AuthModule,
     QuestionBankModule,
+    UsageModule,
     SessionsModule,
     CompetitorsModule,
     BuyingSignalsModule,

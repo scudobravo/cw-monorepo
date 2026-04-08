@@ -281,3 +281,19 @@ export function transcriptionWsUrl(): string {
   const base = BASE_URL.replace(/^http/, 'ws');
   return `${base}/transcription`;
 }
+
+// ── Usage ─────────────────────────────────────────────────────
+
+export interface UsageInfo {
+  used: number;
+  limit: number;
+  percent: number;
+  plan: string;
+  planName: string;
+  resetAt: string;
+  allowed: boolean;
+}
+
+export function getUsage(token: string) {
+  return request<UsageInfo>('/usage', {}, token);
+}

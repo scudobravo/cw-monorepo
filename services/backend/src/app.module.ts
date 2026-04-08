@@ -12,6 +12,7 @@ import { CompetitorsModule } from './modules/competitors/competitors.module';
 import { BuyingSignalsModule } from './modules/buying-signals/buying-signals.module';
 import { DrillsModule } from './modules/drills/drills.module';
 import { CompaniesModule } from './modules/companies/companies.module';
+import { UsageModule } from './modules/usage/usage.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { CompaniesModule } from './modules/companies/companies.module';
     BuyingSignalsModule,
     DrillsModule,
     CompaniesModule,
+    UsageModule,
   ],
   controllers: [HealthController],
 })

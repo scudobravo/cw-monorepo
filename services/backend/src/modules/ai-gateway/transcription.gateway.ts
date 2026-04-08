@@ -20,6 +20,7 @@ import { ClaudeService } from './claude.service';
 import { BuyingSignalsService } from '../buying-signals/buying-signals.service';
 import { SessionProblemContextService } from '../problems/session-problem-context.service';
 import { CompaniesService } from '../companies/companies.service';
+import { UsageService } from '../usage/usage.service';
 import {
   type VocalMetrics,
   computeRollingWpm,
@@ -177,6 +178,7 @@ export class TranscriptionGateway
     private buyingSignals: BuyingSignalsService,
     private sessionProblemContext: SessionProblemContextService,
     private companiesService: CompaniesService,
+    private usageService: UsageService,
   ) {}
 
   handleConnection(client: WebSocket) {
@@ -209,6 +211,16 @@ export class TranscriptionGateway
     const user = await this.auth.verifyToken(payload.token);
     if (!user) {
       client.send(JSON.stringify({ event: 'error', data: { message: 'Unauthorized' } }));
+      client.close();
+      return;
+    }
+
+    const allowed = await this.usageService.checkLimit(user.id);
+    if (!allowed) {
+      client.send(JSON.stringify({
+        event: 'usage_limit',
+        data: { message: 'Monthly token limit reached. Upgrade your plan to continue.' },
+      }));
       client.close();
       return;
     }
@@ -476,6 +488,7 @@ export class TranscriptionGateway
               session.suggestionCount += 1;
               session.buyingSignalCooldown[sig] = Date.now();
               skipQuestionInfer = true;
+              this.usageService.track(session.userId, closing.tokensUsed).catch(() => {});
               client.send(
                 JSON.stringify({
                   event: 'suggestion',
@@ -512,6 +525,7 @@ export class TranscriptionGateway
 
       if (result.content) {
         session.suggestionCount += 1;
+        this.usageService.track(session.userId, result.tokensUsed).catch(() => {});
         client.send(
           JSON.stringify({
             event: 'suggestion',
