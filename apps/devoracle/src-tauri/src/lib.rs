@@ -1,12 +1,12 @@
 mod commands;
 
+use cw_core::StealthConfig;
+use cw_session_engine::SessionEngine;
+use cw_stealth::StealthCoordinator;
 use std::sync::Arc;
 use tauri::Manager;
 use tauri_plugin_global_shortcut::ShortcutState;
 use tokio::sync::Mutex;
-use cw_session_engine::SessionEngine;
-use cw_stealth::StealthCoordinator;
-use cw_core::StealthConfig;
 use tracing_subscriber::EnvFilter;
 
 /// Application state managed by Tauri
@@ -21,8 +21,7 @@ pub fn run() {
     // Initialize tracing
     tracing_subscriber::fmt()
         .with_env_filter(
-            EnvFilter::from_default_env()
-                .add_directive("codewhisper=debug".parse().unwrap()),
+            EnvFilter::from_default_env().add_directive("codewhisper=debug".parse().unwrap()),
         )
         .init();
 
@@ -73,7 +72,8 @@ pub fn run() {
             tracing::info!("Savant desktop starting up");
 
             // Clone the Arc so the spawned task owns it independently
-            let stealth: Arc<StealthCoordinator> = Arc::clone(&app.state::<AppState>().stealth_coordinator);
+            let stealth: Arc<StealthCoordinator> =
+                Arc::clone(&app.state::<AppState>().stealth_coordinator);
             tauri::async_runtime::spawn(async move {
                 stealth.start().await;
             });

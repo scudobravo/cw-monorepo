@@ -48,9 +48,9 @@ mod macos {
         }
 
         // Firefox: limited AppleScript — try window name sometimes contains URL
-        if let Some(name) = run_applescript(
-            r#"tell application "Firefox" to get name of front window"#,
-        ) {
+        if let Some(name) =
+            run_applescript(r#"tell application "Firefox" to get name of front window"#)
+        {
             if name.starts_with("http://") || name.starts_with("https://") {
                 if is_coding_problem_url(&name) {
                     return Some(name);
@@ -80,7 +80,9 @@ fn detects_target_urls() {
     assert!(is_coding_problem_url(
         "https://leetcode.com/problems/two-sum/"
     ));
-    assert!(is_coding_problem_url("https://neetcode.io/problems/two-sum"));
+    assert!(is_coding_problem_url(
+        "https://neetcode.io/problems/two-sum"
+    ));
     assert!(is_coding_problem_url(
         "https://www.hackerrank.com/challenges/arrays-ds"
     ));

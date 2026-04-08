@@ -1,11 +1,11 @@
 mod commands;
 
+use cw_core::StealthConfig;
+use cw_session_engine::SessionEngine;
+use cw_stealth::StealthCoordinator;
 use std::sync::Arc;
 use tauri::Manager;
 use tokio::sync::Mutex;
-use cw_session_engine::SessionEngine;
-use cw_stealth::StealthCoordinator;
-use cw_core::StealthConfig;
 use tracing_subscriber::EnvFilter;
 
 pub struct AppState {
@@ -17,10 +17,7 @@ pub struct AppState {
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tracing_subscriber::fmt()
-        .with_env_filter(
-            EnvFilter::from_default_env()
-                .add_directive("cue=debug".parse().unwrap()),
-        )
+        .with_env_filter(EnvFilter::from_default_env().add_directive("cue=debug".parse().unwrap()))
         .init();
 
     let app_state = AppState {

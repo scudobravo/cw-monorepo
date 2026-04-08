@@ -40,12 +40,14 @@ impl TelemetryCollector {
 
     /// Track stealth mode activation
     pub async fn track_stealth_activated(&self) {
-        self.track("stealth_mode_activated", serde_json::json!({})).await;
+        self.track("stealth_mode_activated", serde_json::json!({}))
+            .await;
     }
 
     /// Track stealth mode deactivation
     pub async fn track_stealth_deactivated(&self) {
-        self.track("stealth_mode_deactivated", serde_json::json!({})).await;
+        self.track("stealth_mode_deactivated", serde_json::json!({}))
+            .await;
     }
 
     /// Track a privately delivered suggestion
@@ -53,12 +55,14 @@ impl TelemetryCollector {
         self.track(
             "suggestion_delivered_privately",
             serde_json::json!({ "channel": channel }),
-        ).await;
+        )
+        .await;
     }
 
     /// Track hotkey peek triggered
     pub async fn track_hotkey_peek(&self) {
-        self.track("hotkey_peek_triggered", serde_json::json!({})).await;
+        self.track("hotkey_peek_triggered", serde_json::json!({}))
+            .await;
     }
 
     /// Flush events to the backend

@@ -1,7 +1,7 @@
 //! Floating transparent overlay window (DevOracle code hints).
 
-use tauri::{AppHandle, Manager, WebviewUrl};
 use tauri::webview::WebviewWindowBuilder;
+use tauri::{AppHandle, Manager, WebviewUrl};
 
 #[tauri::command]
 pub async fn open_overlay(app: AppHandle) -> Result<(), String> {

@@ -1,9 +1,9 @@
 //! Suggestion preparation module.
 //! Formats AI responses for display in the appropriate output channel.
 
-use cw_core::{Suggestion, SuggestionType, StealthOutputChannel};
-use uuid::Uuid;
 use chrono::Utc;
+use cw_core::{StealthOutputChannel, Suggestion, SuggestionType};
+use uuid::Uuid;
 
 pub struct SuggestionBuilder;
 

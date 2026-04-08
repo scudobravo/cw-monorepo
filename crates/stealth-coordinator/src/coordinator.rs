@@ -43,7 +43,10 @@ impl StealthCoordinator {
     /// Manually activate/deactivate stealth mode
     pub async fn set_active(&self, active: bool) {
         *self.active.write().await = active;
-        info!("Stealth mode: {}", if active { "activated" } else { "deactivated" });
+        info!(
+            "Stealth mode: {}",
+            if active { "activated" } else { "deactivated" }
+        );
     }
 
     /// Update stealth configuration
@@ -89,10 +92,8 @@ impl StealthCoordinator {
             tokio::spawn(async move {
                 while call_rx.changed().await.is_ok() {
                     let call_state = *call_rx.borrow();
-                    let should_stealth = matches!(
-                        call_state,
-                        CallState::CallDetected | CallState::InCall
-                    );
+                    let should_stealth =
+                        matches!(call_state, CallState::CallDetected | CallState::InCall);
                     *active.write().await = should_stealth;
                     info!(
                         "Auto-stealth: {} (call state: {:?})",

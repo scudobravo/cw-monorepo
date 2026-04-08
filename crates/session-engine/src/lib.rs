@@ -47,7 +47,9 @@ impl SessionEngine {
     /// Stop the current session
     pub async fn stop(&self) -> Result<SessionSummary, AppError> {
         let mut current = self.current.write().await;
-        let session = current.take().ok_or(AppError::Session("No active session".into()))?;
+        let session = current
+            .take()
+            .ok_or(AppError::Session("No active session".into()))?;
 
         let ended_at = Utc::now();
         let duration = (ended_at - session.started_at).num_seconds() as u64;

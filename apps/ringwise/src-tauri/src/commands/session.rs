@@ -23,7 +23,9 @@ pub async fn stop_session(state: State<'_, AppState>) -> Result<SessionSummary, 
 }
 
 #[tauri::command]
-pub async fn get_session_state(state: State<'_, AppState>) -> Result<Option<SessionState>, AppError> {
+pub async fn get_session_state(
+    state: State<'_, AppState>,
+) -> Result<Option<SessionState>, AppError> {
     Ok(state.session_engine.current_state().await)
 }
 
@@ -146,13 +148,8 @@ pub async fn start_audio_pipeline(
         return Err("Audio pipeline already running".to_string());
     }
 
-    let pipeline = TranscriptionPipeline::new(
-        backend_ws_url,
-        token,
-        sid,
-        session.mode,
-        company_slug,
-    );
+    let pipeline =
+        TranscriptionPipeline::new(backend_ws_url, token, sid, session.mode, company_slug);
 
     let (audio_tx, audio_rx) = mpsc::channel::<(Vec<f32>, u32)>(64);
     let audio_tx_bridge = audio_tx.clone();
@@ -211,10 +208,7 @@ pub async fn start_audio_pipeline(
                             other: seg.session_word_counts.other,
                         },
                         talk_ratio_user: seg.talk_ratio_user,
-                        vocal_metrics: seg
-                            .vocal_metrics
-                            .as_ref()
-                            .map(vocal_metrics_payload),
+                        vocal_metrics: seg.vocal_metrics.as_ref().map(vocal_metrics_payload),
                     };
                     let _ = app_t.emit("transcript_segment", payload);
                 }

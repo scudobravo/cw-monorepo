@@ -41,9 +41,7 @@ impl PolicyGuard {
         let snapshot = self.snapshot.read().await;
         snapshot
             .as_ref()
-            .map(|s| {
-                s.expires_at > Utc::now() && s.features.iter().any(|f| f == feature)
-            })
+            .map(|s| s.expires_at > Utc::now() && s.features.iter().any(|f| f == feature))
             .unwrap_or(false)
     }
 

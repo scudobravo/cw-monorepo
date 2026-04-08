@@ -22,9 +22,7 @@ impl InferenceOrchestrator {
                     SuggestionType::Explanation
                 }
             }
-            cw_core::SessionMode::RingWise(_) => {
-                SuggestionType::NextResponse
-            }
+            cw_core::SessionMode::RingWise(_) => SuggestionType::NextResponse,
         }
     }
 }
