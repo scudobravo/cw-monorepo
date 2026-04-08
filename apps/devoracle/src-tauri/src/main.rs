@@ -1,5 +1,5 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 fn main() {
-    savant_app_lib::run();
+    devoracle_app_lib::run();
 }
