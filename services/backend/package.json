@@ -5,7 +5,7 @@
   "scripts": {
     "build": "nest build",
     "build:admin": "pnpm --filter @cw/admin build",
-    "start": "nest start",
+    "start": "node dist/main.js",
     "dev": "nest start --watch",
     "start:prod": "node dist/main"
   },
