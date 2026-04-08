@@ -8,8 +8,8 @@ permissions:
   contents: write
 
 jobs:
-  build:
-    name: Build ${{ matrix.os }}
+  build-devoracle:
+    name: DevOracle — ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -37,7 +37,7 @@ jobs:
       - name: Install deps
         run: pnpm install --frozen-lockfile
 
-      - name: Build Tauri app
+      - name: Build DevOracle
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -45,8 +45,53 @@ jobs:
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         with:
           tagName: ${{ github.ref_name }}
-          releaseName: "CodeWhisper ${{ github.ref_name }}"
+          releaseName: "DevOracle ${{ github.ref_name }}"
           releaseBody: "See the changelog for details."
           releaseDraft: true
           prerelease: false
+          projectPath: apps/devoracle
+          args: --target ${{ matrix.target }}
+
+  build-ringwise:
+    name: RingWise — ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: macos-latest
+            target: aarch64-apple-darwin
+          - os: macos-13
+            target: x86_64-apple-darwin
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Install deps
+        run: pnpm install --frozen-lockfile
+
+      - name: Build RingWise
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: "RingWise ${{ github.ref_name }}"
+          releaseBody: "See the changelog for details."
+          releaseDraft: true
+          prerelease: false
+          projectPath: apps/ringwise
           args: --target ${{ matrix.target }}

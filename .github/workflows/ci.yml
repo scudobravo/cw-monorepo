@@ -11,7 +11,7 @@ env:
 
 jobs:
   rust:
-    name: Rust checks
+    name: Rust checks — ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -21,17 +21,11 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           components: clippy, rustfmt
+      - uses: Swatinem/rust-cache@v2
 
       - name: Install system deps (macOS)
         if: runner.os == 'macOS'
-        run: |
-          brew install alsa-lib || true
-
-      - name: Install system deps (Windows)
-        if: runner.os == 'Windows'
-        run: echo "No extra deps needed"
-
-      - uses: Swatinem/rust-cache@v2
+        run: brew install alsa-lib || true
 
       - name: Check formatting
         run: cargo fmt --all -- --check
@@ -42,8 +36,8 @@ jobs:
       - name: Tests
         run: cargo test --workspace
 
-  frontend:
-    name: Frontend checks
+  frontend-devoracle:
+    name: Frontend — DevOracle
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -59,7 +53,29 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: TypeScript check
-        run: pnpm --filter @codewhisper/desktop tsc --noEmit
+        run: pnpm --filter @devoracle/app exec tsc --noEmit
 
       - name: Build frontend
-        run: pnpm --filter @codewhisper/desktop build
+        run: pnpm --filter @devoracle/app build
+
+  frontend-ringwise:
+    name: Frontend — RingWise
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install deps
+        run: pnpm install --frozen-lockfile
+
+      - name: TypeScript check
+        run: pnpm --filter @ringwise/app exec tsc --noEmit
+
+      - name: Build frontend
+        run: pnpm --filter @ringwise/app build
