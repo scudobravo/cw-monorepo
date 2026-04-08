@@ -1,5 +1,5 @@
 /**
- * HTTP client for the Cue NestJS backend.
+ * HTTP client for the RingWise NestJS backend.
  * All requests are authenticated with the Supabase JWT stored in authStore.
  */
 

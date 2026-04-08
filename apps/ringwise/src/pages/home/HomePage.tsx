@@ -89,7 +89,7 @@ export default function HomePage() {
           <div>
             <h1 className="page-title">Hey {firstName} 👋</h1>
             <p className="page-subtitle">
-              Pick a call type to get real-time AI coaching. Cue listens, you close.
+              Pick a call type to get real-time AI coaching. RingWise listens, you close.
             </p>
           </div>
         </div>

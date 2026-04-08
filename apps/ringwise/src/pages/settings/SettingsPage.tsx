@@ -50,7 +50,7 @@ export default function SettingsPage() {
         <div className="page-header">
           <div>
             <h1 className="page-title">Settings</h1>
-            <p className="page-subtitle">Configure Cue to stay invisible during your calls.</p>
+            <p className="page-subtitle">Configure RingWise to stay invisible during your calls.</p>
           </div>
           {saving && (
             <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "12px", color: "var(--text-3)" }}>
@@ -67,7 +67,7 @@ export default function SettingsPage() {
         </div>
         <div className="card" style={{ padding: "16px", marginBottom: "16px" }}>
           <p style={{ fontSize: "12px", color: "var(--text-3)", marginBottom: "12px" }}>
-            Cue listens to your microphone to transcribe the call in real time. Select the device
+            RingWise listens to your microphone to transcribe the call in real time. Select the device
             capturing your voice (not the meeting audio — that comes from the call software).
           </p>
           <div className="form-group">
@@ -98,7 +98,7 @@ export default function SettingsPage() {
         </div>
         <div className="card" style={{ padding: "16px", marginBottom: "16px" }}>
           <p style={{ fontSize: "12px", color: "var(--text-3)", marginBottom: "16px" }}>
-            Stealth mode hides Cue's window from screen sharing and recording tools. Enable it
+            Stealth mode hides RingWise's window from screen sharing and recording tools. Enable it
             before any call where your prospect might see your screen.
           </p>
 
@@ -142,7 +142,7 @@ export default function SettingsPage() {
                 Auto-activate when call is detected
               </div>
               <div style={{ fontSize: "10px", color: "var(--text-4)" }}>
-                Cue watches for Zoom, Teams, Meet, Webex and enables stealth automatically
+                RingWise watches for Zoom, Teams, Meet, Webex and enables stealth automatically
               </div>
             </div>
           </label>
@@ -208,7 +208,7 @@ export default function SettingsPage() {
         <div className="card" style={{ padding: "14px 16px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div>
-              <div style={{ fontSize: "13px", fontWeight: 600, color: "var(--text-1)" }}>Cue</div>
+              <div style={{ fontSize: "13px", fontWeight: 600, color: "var(--text-1)" }}>RingWise</div>
               <div style={{ fontSize: "11px", color: "var(--text-4)" }}>AI Sales Coach</div>
             </div>
             <div
