@@ -1,0 +1,10 @@
+[package]
+name = "cw-screen-context"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+cw-core.workspace = true
+tokio.workspace = true
+tracing.workspace = true
+thiserror.workspace = true

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>NSMicrophoneUsageDescription</key>
+  <string>RingWise needs microphone access to listen to your sales calls and provide real-time AI coaching.</string>
+  <key>NSScreenCaptureDescription</key>
+  <string>RingWise uses screen context to provide relevant suggestions during your calls.</string>
+</dict>
+</plist>

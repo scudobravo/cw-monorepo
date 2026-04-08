@@ -1,0 +1,47 @@
+# Rust
+/target
+**/target
+
+# Node
+node_modules
+dist
+.vite
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Tauri build output (covered by **/target above)
+
+# Tauri gen schemas (auto-generated)
+apps/*/src-tauri/gen/
+
+# Backend compiled output
+services/backend/dist/
+
+# pnpm
+.pnpm-store/
+
+# Build artifacts
+*.dmg
+*.msi
+*.exe
+*.app
+*.deb
+*.AppImage
+
+# Logs
+*.log
+npm-debug.log*

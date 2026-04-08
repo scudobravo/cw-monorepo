@@ -1,0 +1,89 @@
+[workspace]
+resolver = "2"
+members = [
+    "apps/devoracle/src-tauri",
+    "apps/ringwise/src-tauri",
+    "crates/core",
+    "crates/audio-capture",
+    "crates/screen-context",
+    "crates/transcription",
+    "crates/context-assembler",
+    "crates/inference",
+    "crates/suggestion",
+    "crates/session-engine",
+    "crates/stealth-coordinator",
+    "crates/policy-guard",
+    "crates/secure-cache",
+    "crates/telemetry",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+authors = ["RingWise / DevOracle"]
+license = "proprietary"
+rust-version = "1.77"
+
+[workspace.dependencies]
+# Serialization
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# Async
+tokio = { version = "1", features = ["full"] }
+
+# Error handling
+thiserror = "2"
+anyhow = "1"
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# HTTP
+reqwest = { version = "0.12", features = ["json", "rustls-tls", "stream"] }
+
+# WebSocket
+tokio-tungstenite = { version = "0.24", features = ["rustls-tls-webpki-roots"] }
+futures-util = "0.3"
+
+# Audio
+cpal = "0.15"
+
+# Database
+rusqlite = { version = "0.32", features = ["bundled"] }
+
+# Crypto
+aes-gcm = "0.10"
+rand = "0.8"
+
+# Time
+chrono = { version = "0.4", features = ["serde"] }
+
+# UUID
+uuid = { version = "1", features = ["v4", "serde"] }
+
+# Tauri
+tauri = "2"
+tauri-build = "2"
+tauri-plugin = "2"
+
+# Internal crates
+cw-core = { path = "crates/core" }
+cw-audio-capture = { path = "crates/audio-capture" }
+cw-screen-context = { path = "crates/screen-context" }
+cw-transcription = { path = "crates/transcription" }
+cw-context-assembler = { path = "crates/context-assembler" }
+cw-inference = { path = "crates/inference" }
+cw-suggestion = { path = "crates/suggestion" }
+cw-session-engine = { path = "crates/session-engine" }
+cw-stealth = { path = "crates/stealth-coordinator" }
+cw-policy-guard = { path = "crates/policy-guard" }
+cw-secure-cache = { path = "crates/secure-cache" }
+cw-telemetry = { path = "crates/telemetry" }
+
+[profile.release]
+lto = true
+codegen-units = 1
+strip = "symbols"
+opt-level = "s"

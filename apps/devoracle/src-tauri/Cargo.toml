@@ -1,0 +1,44 @@
+[package]
+name = "devoracle-app"
+version.workspace = true
+edition.workspace = true
+
+[lib]
+name = "devoracle_app_lib"
+crate-type = ["lib", "cdylib", "staticlib"]
+
+[[bin]]
+name = "devoracle-app"
+path = "src/main.rs"
+
+[build-dependencies]
+tauri-build = { workspace = true, features = [] }
+
+[dependencies]
+tauri = { workspace = true, features = ["macos-private-api"] }
+tauri-plugin-shell = "2"
+tauri-plugin-global-shortcut = "2"
+tauri-plugin-notification = "2"
+
+# Internal crates
+cw-core.workspace = true
+cw-audio-capture.workspace = true
+cw-screen-context.workspace = true
+cw-transcription.workspace = true
+cw-context-assembler.workspace = true
+cw-inference.workspace = true
+cw-suggestion.workspace = true
+cw-session-engine.workspace = true
+cw-stealth.workspace = true
+cw-policy-guard.workspace = true
+cw-secure-cache.workspace = true
+cw-telemetry.workspace = true
+
+# Core dependencies
+serde.workspace = true
+serde_json.workspace = true
+tokio.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+thiserror.workspace = true
+uuid.workspace = true

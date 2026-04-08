@@ -1,0 +1,12 @@
+[package]
+name = "cw-context-assembler"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+cw-core.workspace = true
+tokio.workspace = true
+tracing.workspace = true
+thiserror.workspace = true
+serde.workspace = true
+uuid.workspace = true
