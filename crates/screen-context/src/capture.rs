@@ -1,5 +1,6 @@
 use cw_core::AppError;
 
+#[derive(Default)]
 pub struct ScreenCapture;
 
 impl ScreenCapture {

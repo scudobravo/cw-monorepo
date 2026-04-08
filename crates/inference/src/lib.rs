@@ -3,6 +3,7 @@
 
 use cw_core::{ContextFrame, SuggestionType};
 
+#[derive(Default)]
 pub struct InferenceOrchestrator;
 
 impl InferenceOrchestrator {

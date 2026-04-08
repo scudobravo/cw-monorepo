@@ -10,6 +10,12 @@ pub struct SessionEngine {
     current: Arc<RwLock<Option<Session>>>,
 }
 
+impl Default for SessionEngine {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl SessionEngine {
     pub fn new() -> Self {
         Self {
