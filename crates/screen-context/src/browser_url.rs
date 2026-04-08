@@ -51,10 +51,10 @@ mod macos {
         if let Some(name) =
             run_applescript(r#"tell application "Firefox" to get name of front window"#)
         {
-            if name.starts_with("http://") || name.starts_with("https://") {
-                if is_coding_problem_url(&name) {
-                    return Some(name);
-                }
+            if (name.starts_with("http://") || name.starts_with("https://"))
+                && is_coding_problem_url(&name)
+            {
+                return Some(name);
             }
         }
 
@@ -66,7 +66,7 @@ mod macos {
 pub fn get_active_browser_url() -> Option<String> {
     #[cfg(target_os = "macos")]
     {
-        return macos::active_problem_url();
+        macos::active_problem_url()
     }
     #[cfg(not(target_os = "macos"))]
     {
