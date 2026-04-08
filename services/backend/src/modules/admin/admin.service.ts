@@ -1,7 +1,7 @@
 import { Injectable, Logger, NotFoundException, BadRequestException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import Stripe from 'stripe';
+import Stripe = require('stripe');
 type StripeClient = InstanceType<typeof Stripe>;
 
 @Injectable()
