@@ -343,7 +343,7 @@ async fn connect_with_retry(
 ) -> Result<WebSocketStream<MaybeTlsStream<tokio::net::TcpStream>>, AppError> {
     let delays_ms = [1000u64, 2000, 4000];
     let mut last_err = String::new();
-    for attempt in 0..3 {
+    for (attempt, &delay) in delays_ms.iter().enumerate() {
         match connect_async(url).await {
             Ok((stream, _)) => {
                 info!("WebSocket connected to {} (attempt {})", url, attempt + 1);
@@ -357,7 +357,7 @@ async fn connect_with_retry(
                     last_err
                 );
                 if attempt < 2 {
-                    sleep(Duration::from_millis(delays_ms[attempt])).await;
+                    sleep(Duration::from_millis(delay)).await;
                 }
             }
         }
