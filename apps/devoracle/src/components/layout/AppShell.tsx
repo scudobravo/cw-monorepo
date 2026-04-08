@@ -16,7 +16,6 @@ import {
 import { invoke } from "@tauri-apps/api/core";
 import { useStealthStore } from "../../stores/stealthStore";
 import { useSessionStore } from "../../stores/sessionStore";
-import { useProductStore, type Product } from "../../stores/productStore";
 import { useAuthStore } from "../../stores/authStore";
 
 interface NavItem {
@@ -33,10 +32,6 @@ const NAV_ITEMS: NavItem[] = [
   { label: "Settings",  path: "/settings", icon: <Settings size={15} /> },
 ];
 
-const PRODUCTS: { id: Product; label: string; short: string }[] = [
-  { id: "DevOracle", label: "Interview AI", short: "CW" },
-  { id: "RingWise",  label: "Sales AI",     short: "CC" },
-];
 
 interface Props {
   children: ReactNode;
@@ -48,7 +43,6 @@ export default function AppShell({ children, version }: Props) {
   const location  = useLocation();
   const { isActive: stealthActive, toggle: toggleStealth } = useStealthStore();
   const { session } = useSessionStore();
-  const { active: activeProduct, setActive } = useProductStore();
   const { signOut, user } = useAuthStore();
 
   const handleSignOut = async () => {
@@ -67,68 +61,26 @@ export default function AppShell({ children, version }: Props) {
 
         {/* Logo */}
         <div className="sidebar-logo">
-          <div className="logo-mark">
-            <Zap size={12} />
+          <div className="logo-mark" style={{ background: "var(--accent-dim)", border: "1px solid var(--accent-border)" }}>
+            <Zap size={12} style={{ color: "var(--accent-light)" }} />
           </div>
           <div>
-            <div className="logo-name">Savant</div>
+            <div className="logo-name">DevOracle</div>
             {version && <div className="logo-version">v{version}</div>}
           </div>
         </div>
 
-        {/* Product switcher */}
-        <div style={{ padding: "8px 8px 0" }}>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: "4px",
-              background: "var(--bg-app)",
-              padding: "3px",
-              borderRadius: "var(--r-md)",
-              border: "1px solid var(--border-1)",
-            }}
-          >
-            {PRODUCTS.map((p) => (
-              <button
-                key={p.id}
-                onClick={() => setActive(p.id)}
-                title={p.id === "DevOracle" ? "Interview AI coaching" : "Sales call AI coaching"}
-                style={{
-                  padding: "5px 8px",
-                  borderRadius: "6px",
-                  fontSize: "11px",
-                  fontWeight: 600,
-                  transition: "all var(--t-fast)",
-                  background:
-                    activeProduct === p.id
-                      ? p.id === "DevOracle" ? "var(--accent-dim)"  : "var(--green-dim)"
-                      : "transparent",
-                  color:
-                    activeProduct === p.id
-                      ? p.id === "DevOracle" ? "var(--accent-light)" : "var(--green)"
-                      : "var(--text-3)",
-                  border:
-                    activeProduct === p.id
-                      ? p.id === "DevOracle"
-                        ? "1px solid var(--accent-border)"
-                        : "1px solid rgba(34,197,94,0.2)"
-                      : "1px solid transparent",
-                }}
-              >
-                {p.short}
-              </button>
-            ))}
-          </div>
-          {/* Active product label */}
+        {/* Product label */}
+        <div style={{ padding: "6px 12px 0" }}>
           <div style={{
-            textAlign: "center",
             fontSize: "10px",
-            color: "var(--text-4)",
-            marginTop: "5px",
-            letterSpacing: "0.3px",
+            color: "var(--accent-light)",
+            fontWeight: 600,
+            letterSpacing: "0.5px",
+            textTransform: "uppercase",
+            opacity: 0.7,
           }}>
-            {activeProduct === "DevOracle" ? "Interview AI" : "Sales AI"}
+            Interview AI
           </div>
         </div>
 
@@ -237,11 +189,11 @@ export default function AppShell({ children, version }: Props) {
           <button
             className="stealth-btn"
             onClick={handleQuit}
-            title="Quit Savant"
+            title="Quit DevOracle"
             style={{ color: "var(--text-3)" }}
           >
             <Power size={14} />
-            <span>Quit Savant</span>
+            <span>Quit DevOracle</span>
           </button>
         </div>
       </aside>

@@ -6,8 +6,6 @@ import {
   Code2,
   BrainCircuit,
   LayoutTemplate,
-  PhoneCall,
-  Activity,
   Sparkles,
   ArrowRight,
   X,
@@ -62,20 +60,6 @@ const MODES: ModeConfig[] = [
     icon: <LayoutTemplate size={16} />,
     color: "amber",
     mode: { product: "DevOracle", mode: "system_design" },
-  },
-  {
-    label: "Sales Call",
-    desc: "Live objection handling & closing cues",
-    icon: <PhoneCall size={16} />,
-    color: "green",
-    mode: { product: "RingWise", mode: "sales_call" },
-  },
-  {
-    label: "Discovery",
-    desc: "Pain-point mapping & MEDDIC guidance",
-    icon: <Activity size={16} />,
-    color: "blue",
-    mode: { product: "RingWise", mode: "discovery" },
   },
 ];
 
