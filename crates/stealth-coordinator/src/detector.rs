@@ -22,6 +22,12 @@ pub struct CallDetector {
     state_rx: watch::Receiver<CallState>,
 }
 
+impl Default for CallDetector {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl CallDetector {
     pub fn new() -> Self {
         let (state_tx, state_rx) = watch::channel(CallState::NoCall);
