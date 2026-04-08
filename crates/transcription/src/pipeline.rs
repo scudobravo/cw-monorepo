@@ -384,10 +384,13 @@ async fn handle_server_message(
                     .map(|d| d.with_timezone(&chrono::Utc))
                     .unwrap_or_else(|_| chrono::Utc::now());
                 let wc = data.word_count.unwrap_or(0);
-                let swc = data.session_word_counts.map(|s| SessionWordCounts {
-                    user: s.user,
-                    other: s.other,
-                }).unwrap_or(SessionWordCounts { user: 0, other: 0 });
+                let swc = data
+                    .session_word_counts
+                    .map(|s| SessionWordCounts {
+                        user: s.user,
+                        other: s.other,
+                    })
+                    .unwrap_or(SessionWordCounts { user: 0, other: 0 });
                 let ratio = data.talk_ratio_user.unwrap_or(0.0);
                 let segment = TranscriptSegment {
                     id: Uuid::new_v4(),
