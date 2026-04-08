@@ -24,7 +24,11 @@ async function bootstrap() {
   app.enableCors({ origin: '*' });
 
   app.setGlobalPrefix('api', {
-    exclude: [{ path: 'admin/(.*)', method: RequestMethod.ALL }],
+    exclude: [
+      { path: 'admin/(.*)', method: RequestMethod.ALL },
+      { path: 'health', method: RequestMethod.GET },
+      { path: '', method: RequestMethod.GET },
+    ],
   });
 
   const adminDist = join(__dirname, '..', 'admin-dist');
