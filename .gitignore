@@ -30,6 +30,7 @@ apps/*/src-tauri/gen/
 
 # Backend compiled output
 services/backend/dist/
+services/backend/admin-dist/
 
 # pnpm
 .pnpm-store/

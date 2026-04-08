@@ -6,7 +6,7 @@ export class HealthController {
   root() {
     return {
       status: 'ok',
-      service: 'Savant Backend',
+      service: 'DevOracle + RingWise API',
       version: '0.1.0',
       endpoints: {
         auth: 'POST /api/auth/verify · GET /api/auth/me',
