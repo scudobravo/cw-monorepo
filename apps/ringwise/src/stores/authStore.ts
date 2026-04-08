@@ -1,6 +1,8 @@
 import { create } from 'zustand';
 import { createClient, type User, type Session } from '@supabase/supabase-js';
 
+const PRODUCT = 'RingWise' as const;
+
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
   import.meta.env.VITE_SUPABASE_ANON_KEY,
@@ -12,7 +14,6 @@ interface AuthStore {
   isLoading: boolean;
   error: string | null;
 
-  /** Token shorthand for passing to API calls */
   token: () => string | null;
 
   initialize: () => Promise<void>;
@@ -20,6 +21,27 @@ interface AuthStore {
   signUp: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
   clearError: () => void;
+}
+
+async function ensureProfile(user: User): Promise<boolean> {
+  const { data: existing } = await supabase
+    .from('profiles')
+    .select('product')
+    .eq('id', user.id)
+    .maybeSingle();
+
+  if (existing) {
+    return existing.product === PRODUCT;
+  }
+
+  // No profile yet — create one for this app
+  const { error } = await supabase.from('profiles').insert({
+    id: user.id,
+    email: user.email ?? '',
+    product: PRODUCT,
+  });
+
+  return !error;
 }
 
 export const useAuthStore = create<AuthStore>((set, get) => ({
@@ -33,13 +55,20 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
   initialize: async () => {
     set({ isLoading: true });
     const { data } = await supabase.auth.getSession();
+    if (data.session) {
+      const ok = await ensureProfile(data.session.user);
+      if (!ok) {
+        await supabase.auth.signOut();
+        set({ session: null, user: null, isLoading: false });
+        return;
+      }
+    }
     set({
       session: data.session,
       user: data.session?.user ?? null,
       isLoading: false,
     });
 
-    // Keep in sync with Supabase auth state changes
     supabase.auth.onAuthStateChange((_event, session) => {
       set({ session, user: session?.user ?? null });
     });
@@ -47,14 +76,22 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
 
   signIn: async (email, password) => {
     set({ isLoading: true, error: null });
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) {
       set({ error: error.message, isLoading: false });
       return;
     }
+
+    const ok = await ensureProfile(data.user);
+    if (!ok) {
+      await supabase.auth.signOut();
+      set({
+        error: 'No RingWise account found for this email. Please sign up first.',
+        isLoading: false,
+      });
+      return;
+    }
+
     set({ session: data.session, user: data.user, isLoading: false });
   },
 
@@ -65,6 +102,11 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
       set({ error: error.message, isLoading: false });
       return;
     }
+
+    if (data.user) {
+      await ensureProfile(data.user);
+    }
+
     set({ session: data.session, user: data.user, isLoading: false });
   },
 
