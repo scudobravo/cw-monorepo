@@ -24,7 +24,7 @@
       }
     ],
     "security": {
-      "csp": "default-src 'self'; connect-src 'self' https://*.devoracle.com wss://*.devoracle.com https://*.supabase.co https://measured-trout-39848.upstash.io http://localhost:3000 ws://localhost:3000; img-src 'self' data:; style-src 'self' 'unsafe-inline'"
+      "csp": "default-src 'self'; connect-src 'self' https://*.devoracle.com wss://*.devoracle.com https://*.supabase.co https://measured-trout-39848.upstash.io https://cwbackend-production-9d21.up.railway.app wss://cwbackend-production-9d21.up.railway.app http://localhost:3000 ws://localhost:3000; img-src 'self' data:; style-src 'self' 'unsafe-inline'"
     }
   },
   "bundle": {
