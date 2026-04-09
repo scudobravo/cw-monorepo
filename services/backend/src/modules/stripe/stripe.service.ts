@@ -2,7 +2,11 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import Stripe = require('stripe');
-import type { Stripe as StripeTypes } from 'stripe';
+import type { Session as CheckoutSession } from 'stripe/cjs/resources/Checkout/Sessions';
+import type { Subscription } from 'stripe/cjs/resources/Subscriptions';
+import type { Invoice } from 'stripe/cjs/resources/Invoices';
+import type { Customer } from 'stripe/cjs/resources/Customers';
+
 type StripeClient = InstanceType<typeof Stripe>;
 
 type Product = 'DevOracle' | 'RingWise';
@@ -32,7 +36,7 @@ export class StripeService {
 
   // ── Checkout completed ────────────────────────────────────────
 
-  async handleCheckoutCompleted(session: StripeTypes.Checkout.Session) {
+  async handleCheckoutCompleted(session: CheckoutSession) {
     const email = session.customer_email ?? await this.getCustomerEmail(session.customer as string);
     if (!email) {
       this.logger.warn(`checkout.session.completed: no email for session ${session.id}`);
@@ -220,7 +224,7 @@ export class StripeService {
 
   // ── Subscription deleted → downgrade to free ─────────────────
 
-  async handleSubscriptionDeleted(subscription: StripeTypes.Subscription) {
+  async handleSubscriptionDeleted(subscription: Subscription) {
     const { data: profile } = await this.supabase
       .from('profiles')
       .select('id, email')
@@ -247,7 +251,7 @@ export class StripeService {
 
   // ── Subscription updated → sync status ───────────────────────
 
-  async handleSubscriptionUpdated(subscription: StripeTypes.Subscription) {
+  async handleSubscriptionUpdated(subscription: Subscription) {
     const { data: profile } = await this.supabase
       .from('profiles')
       .select('id, email')
@@ -266,10 +270,10 @@ export class StripeService {
 
   // ── Invoice payment failed → past_due ────────────────────────
 
-  async handleInvoicePaymentFailed(invoice: StripeTypes.Invoice) {
-    const subId = typeof invoice.subscription === 'string'
-      ? invoice.subscription
-      : invoice.subscription?.id;
+  async handleInvoicePaymentFailed(invoice: Invoice) {
+    // Stripe v22: subscription reference moved to invoice.parent.subscription_details.subscription
+    const subRef = invoice.parent?.subscription_details?.subscription;
+    const subId = typeof subRef === 'string' ? subRef : subRef?.id;
     if (!subId) return;
 
     const { data: profile } = await this.supabase
@@ -295,7 +299,7 @@ export class StripeService {
     try {
       const customer = await this.stripe.customers.retrieve(customerId);
       if (customer.deleted) return null;
-      return (customer as StripeTypes.Customer).email ?? null;
+      return (customer as Customer).email ?? null;
     } catch {
       return null;
     }

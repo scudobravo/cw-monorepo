@@ -10,8 +10,9 @@ import {
 import { RawBodyRequest } from '@nestjs/common';
 import { Request } from 'express';
 import { StripeService } from './stripe.service';
-import Stripe = require('stripe');
-import type { Stripe as StripeTypes } from 'stripe';
+import type { Session as CheckoutSession } from 'stripe/cjs/resources/Checkout/Sessions';
+import type { Subscription } from 'stripe/cjs/resources/Subscriptions';
+import type { Invoice } from 'stripe/cjs/resources/Invoices';
 
 @Controller('webhooks')
 export class StripeController {
@@ -30,13 +31,14 @@ export class StripeController {
     const rawBody = req.rawBody;
     if (!rawBody) throw new BadRequestException('Missing raw body');
 
-    let event: StripeTypes.Event;
+    // Let TypeScript infer the event type from constructEvent's return type
+    let event: ReturnType<typeof this.stripeService.stripe.webhooks.constructEvent>;
     try {
       event = this.stripeService.stripe.webhooks.constructEvent(
         rawBody,
         sig,
         this.stripeService.webhookSecret,
-      ) as StripeTypes.Event;
+      );
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
       this.logger.warn(`Webhook signature verification failed: ${msg}`);
@@ -48,30 +50,29 @@ export class StripeController {
     switch (event.type) {
       case 'checkout.session.completed':
         await this.stripeService.handleCheckoutCompleted(
-          event.data.object as StripeTypes.Checkout.Session,
+          event.data.object as CheckoutSession,
         );
         break;
 
       case 'customer.subscription.deleted':
         await this.stripeService.handleSubscriptionDeleted(
-          event.data.object as StripeTypes.Subscription,
+          event.data.object as Subscription,
         );
         break;
 
       case 'customer.subscription.updated':
         await this.stripeService.handleSubscriptionUpdated(
-          event.data.object as StripeTypes.Subscription,
+          event.data.object as Subscription,
         );
         break;
 
       case 'invoice.payment_failed':
         await this.stripeService.handleInvoicePaymentFailed(
-          event.data.object as StripeTypes.Invoice,
+          event.data.object as Invoice,
         );
         break;
 
       default:
-        // Ignore unhandled event types
         break;
     }
 
