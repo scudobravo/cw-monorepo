@@ -23,6 +23,9 @@ Thumbs.db
 .env.local
 .env.*.local
 
+# Apple signing certificates (NEVER commit)
+APPLE/
+
 # Tauri build output (covered by **/target above)
 
 # Tauri gen schemas (auto-generated)

@@ -1,7 +1,7 @@
 import { Injectable, Logger, NotFoundException, BadRequestException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import Stripe = require('stripe');
+import Stripe from 'stripe';
 type StripeClient = InstanceType<typeof Stripe>;
 
 @Injectable()
@@ -50,8 +50,14 @@ export class AdminService {
       this.supabase.from('profiles').select('tokens_used'),
     ]);
 
-    // MRR by plan (€)
-    const planPriceEur: Record<string, number> = { free: 0, pro: 19, team: 49 };
+    // MRR by plan (€) — interview_pass is one-time, excluded from MRR
+    const planPriceEur: Record<string, number> = {
+      free: 0,
+      pro: 17,
+      ringwise_pro: 29,
+      ringwise_team: 69,
+      interview_pass: 0,
+    };
     let mrr_eur = 0;
     const users_by_plan: Record<string, number> = { free: 0, pro: 0, team: 0 };
     const users_by_product: Record<string, number> = { DevOracle: 0, RingWise: 0 };

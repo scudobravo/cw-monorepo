@@ -18,30 +18,20 @@ interface AuthStore {
 
   initialize: () => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
   clearError: () => void;
 }
 
-async function ensureProfile(user: User): Promise<boolean> {
-  const { data: existing } = await supabase
+/** Verifies the user has a profile for this product. */
+async function checkProfile(user: User): Promise<boolean> {
+  const { data } = await supabase
     .from('profiles')
-    .select('product')
+    .select('product, products')
     .eq('id', user.id)
     .maybeSingle();
 
-  if (existing) {
-    return existing.product === PRODUCT;
-  }
-
-  // No profile yet — create one for this app
-  const { error } = await supabase.from('profiles').insert({
-    id: user.id,
-    email: user.email ?? '',
-    product: PRODUCT,
-  });
-
-  return !error;
+  if (!data) return false;
+  return data.product === PRODUCT || (data.products ?? []).includes(PRODUCT);
 }
 
 export const useAuthStore = create<AuthStore>((set, get) => ({
@@ -56,7 +46,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
     set({ isLoading: true });
     const { data } = await supabase.auth.getSession();
     if (data.session) {
-      const ok = await ensureProfile(data.session.user);
+      const ok = await checkProfile(data.session.user);
       if (!ok) {
         await supabase.auth.signOut();
         set({ session: null, user: null, isLoading: false });
@@ -82,29 +72,14 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
       return;
     }
 
-    const ok = await ensureProfile(data.user);
+    const ok = await checkProfile(data.user);
     if (!ok) {
       await supabase.auth.signOut();
       set({
-        error: 'No RingWise account found for this email. Please sign up first.',
+        error: 'No RingWise subscription found for this email. Visit ringwise.com to get started.',
         isLoading: false,
       });
       return;
-    }
-
-    set({ session: data.session, user: data.user, isLoading: false });
-  },
-
-  signUp: async (email, password) => {
-    set({ isLoading: true, error: null });
-    const { data, error } = await supabase.auth.signUp({ email, password });
-    if (error) {
-      set({ error: error.message, isLoading: false });
-      return;
-    }
-
-    if (data.user) {
-      await ensureProfile(data.user);
     }
 
     set({ session: data.session, user: data.user, isLoading: false });

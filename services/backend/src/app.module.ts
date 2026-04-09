@@ -13,6 +13,7 @@ import { BuyingSignalsModule } from './modules/buying-signals/buying-signals.mod
 import { DrillsModule } from './modules/drills/drills.module';
 import { CompaniesModule } from './modules/companies/companies.module';
 import { UsageModule } from './modules/usage/usage.module';
+import { StripeModule } from './modules/stripe/stripe.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { UsageModule } from './modules/usage/usage.module';
     DrillsModule,
     CompaniesModule,
     UsageModule,
+    StripeModule,
   ],
   controllers: [HealthController],
 })

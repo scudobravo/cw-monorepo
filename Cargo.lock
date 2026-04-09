@@ -815,36 +815,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "cue-app"
-version = "0.1.0"
-dependencies = [
- "cw-audio-capture",
- "cw-context-assembler",
- "cw-core",
- "cw-inference",
- "cw-policy-guard",
- "cw-screen-context",
- "cw-secure-cache",
- "cw-session-engine",
- "cw-stealth",
- "cw-suggestion",
- "cw-telemetry",
- "cw-transcription",
- "serde",
- "serde_json",
- "tauri",
- "tauri-build",
- "tauri-plugin-global-shortcut",
- "tauri-plugin-notification",
- "tauri-plugin-shell",
- "thiserror 2.0.18",
- "tokio",
- "tracing",
- "tracing-subscriber",
- "uuid",
-]
-
-[[package]]
 name = "cw-audio-capture"
 version = "0.1.0"
 dependencies = [
@@ -1090,6 +1060,36 @@ dependencies = [
  "quote",
  "rustc_version",
  "syn 2.0.117",
+]
+
+[[package]]
+name = "devoracle-app"
+version = "0.1.0"
+dependencies = [
+ "cw-audio-capture",
+ "cw-context-assembler",
+ "cw-core",
+ "cw-inference",
+ "cw-policy-guard",
+ "cw-screen-context",
+ "cw-secure-cache",
+ "cw-session-engine",
+ "cw-stealth",
+ "cw-suggestion",
+ "cw-telemetry",
+ "cw-transcription",
+ "serde",
+ "serde_json",
+ "tauri",
+ "tauri-build",
+ "tauri-plugin-global-shortcut",
+ "tauri-plugin-notification",
+ "tauri-plugin-shell",
+ "thiserror 2.0.18",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+ "uuid",
 ]
 
 [[package]]
@@ -3980,6 +3980,36 @@ dependencies = [
 ]
 
 [[package]]
+name = "ringwise-app"
+version = "0.1.0"
+dependencies = [
+ "cw-audio-capture",
+ "cw-context-assembler",
+ "cw-core",
+ "cw-inference",
+ "cw-policy-guard",
+ "cw-screen-context",
+ "cw-secure-cache",
+ "cw-session-engine",
+ "cw-stealth",
+ "cw-suggestion",
+ "cw-telemetry",
+ "cw-transcription",
+ "serde",
+ "serde_json",
+ "tauri",
+ "tauri-build",
+ "tauri-plugin-global-shortcut",
+ "tauri-plugin-notification",
+ "tauri-plugin-shell",
+ "thiserror 2.0.18",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+ "uuid",
+]
+
+[[package]]
 name = "rusqlite"
 version = "0.32.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4075,36 +4105,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "93fc1dc3aaa9bfed95e02e6eadabb4baf7e3078b0bd1b4d7b6b0b68378900502"
 dependencies = [
  "winapi-util",
-]
-
-[[package]]
-name = "savant-app"
-version = "0.1.0"
-dependencies = [
- "cw-audio-capture",
- "cw-context-assembler",
- "cw-core",
- "cw-inference",
- "cw-policy-guard",
- "cw-screen-context",
- "cw-secure-cache",
- "cw-session-engine",
- "cw-stealth",
- "cw-suggestion",
- "cw-telemetry",
- "cw-transcription",
- "serde",
- "serde_json",
- "tauri",
- "tauri-build",
- "tauri-plugin-global-shortcut",
- "tauri-plugin-notification",
- "tauri-plugin-shell",
- "thiserror 2.0.18",
- "tokio",
- "tracing",
- "tracing-subscriber",
- "uuid",
 ]
 
 [[package]]
