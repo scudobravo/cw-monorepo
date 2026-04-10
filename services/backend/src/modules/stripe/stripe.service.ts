@@ -6,6 +6,7 @@ import type { Session as CheckoutSession } from 'stripe/cjs/resources/Checkout/S
 import type { Subscription } from 'stripe/cjs/resources/Subscriptions';
 import type { Invoice } from 'stripe/cjs/resources/Invoices';
 import type { Customer } from 'stripe/cjs/resources/Customers';
+import { MailService } from '../mail/mail.service';
 
 type StripeClient = InstanceType<typeof Stripe>;
 
@@ -21,7 +22,10 @@ export class StripeService {
   readonly stripe: StripeClient;
   readonly webhookSecret: string;
 
-  constructor(private readonly config: ConfigService) {
+  constructor(
+    private readonly config: ConfigService,
+    private readonly mail: MailService,
+  ) {
     this.supabase = createClient(
       this.config.get<string>('supabase.url')!,
       this.config.get<string>('supabase.serviceRoleKey')!,
@@ -130,6 +134,7 @@ export class StripeService {
     });
 
     this.logger.log(`Interview Pass provisioned for new user: ${email}`);
+    void this.mail.sendWelcome(product, email);
   }
 
   // ── Subscription (recurring) ──────────────────────────────────
@@ -220,6 +225,7 @@ export class StripeService {
     });
 
     this.logger.log(`New user provisioned: ${email} → ${product} ${plan}`);
+    void this.mail.sendWelcome(product, email);
   }
 
   // ── Subscription deleted → downgrade to free ─────────────────
@@ -247,6 +253,9 @@ export class StripeService {
       .eq('id', profile.id);
 
     this.logger.log(`Subscription cancelled: ${profile.email} → free`);
+
+    const product = (subscription.metadata?.['product'] as Product) ?? 'DevOracle';
+    void this.mail.sendSubscriptionCancelled(product, profile.email);
   }
 
   // ── Subscription updated → sync status ───────────────────────
@@ -290,6 +299,9 @@ export class StripeService {
       .eq('id', profile.id);
 
     this.logger.warn(`Payment failed: ${profile.email} → past_due`);
+
+    const product = (invoice.metadata?.['product'] as Product) ?? 'DevOracle';
+    void this.mail.sendPaymentFailed(product, profile.email);
   }
 
   // ── Helpers ──────────────────────────────────────────────────

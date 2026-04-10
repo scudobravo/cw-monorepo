@@ -14,6 +14,7 @@ import { DrillsModule } from './modules/drills/drills.module';
 import { CompaniesModule } from './modules/companies/companies.module';
 import { UsageModule } from './modules/usage/usage.module';
 import { StripeModule } from './modules/stripe/stripe.module';
+import { MailModule } from './modules/mail/mail.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { StripeModule } from './modules/stripe/stripe.module';
     CompaniesModule,
     UsageModule,
     StripeModule,
+    MailModule,
   ],
   controllers: [HealthController],
 })
