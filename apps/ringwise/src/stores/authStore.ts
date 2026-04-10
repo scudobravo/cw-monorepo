@@ -76,7 +76,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
     if (!ok) {
       await supabase.auth.signOut();
       set({
-        error: 'No RingWise subscription found for this email. Visit ringwise.com to get started.',
+        error: 'No RingWise subscription found for this email. Visit ringwise.uk to get started.',
         isLoading: false,
       });
       return;

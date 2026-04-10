@@ -138,7 +138,7 @@ export default function AppShell({ children, version }: Props) {
               </span>
               {usage.percent >= 70 && (
                 <a
-                  href="https://ringwise.com/pricing"
+                  href="https://ringwise.uk/pricing"
                   target="_blank"
                   rel="noreferrer"
                   style={{ fontSize: "10px", color: ACCENT, fontWeight: 600, textDecoration: "none" }}

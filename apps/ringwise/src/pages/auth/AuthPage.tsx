@@ -158,7 +158,7 @@ export default function AuthPage() {
           >
             Don't have an account?{' '}
             <a
-              href="https://ringwise.com"
+              href="https://ringwise.uk"
               target="_blank"
               rel="noopener noreferrer"
               style={{ color: 'var(--accent-light)', textDecoration: 'none' }}
