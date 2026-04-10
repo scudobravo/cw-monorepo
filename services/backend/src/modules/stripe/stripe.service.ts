@@ -103,7 +103,7 @@ export class StripeService {
     // New user
     const redirectTo = product === 'DevOracle'
       ? 'https://devoracle.com/download'
-      : 'https://ringwise.com/download';
+      : 'https://ringwise.uk/download';
 
     const { data: invited, error } = await this.supabase.auth.admin.inviteUserByEmail(email, {
       data: { product, plan: 'interview_pass' },
@@ -193,7 +193,7 @@ export class StripeService {
     // New user
     const redirectTo = product === 'DevOracle'
       ? 'https://devoracle.com/download'
-      : 'https://ringwise.com/download';
+      : 'https://ringwise.uk/download';
 
     const { data: invited, error } = await this.supabase.auth.admin.inviteUserByEmail(email, {
       data: { product, plan },
