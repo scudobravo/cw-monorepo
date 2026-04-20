@@ -24,20 +24,27 @@ export class StripeController {
   @HttpCode(200)
   async stripeWebhook(
     @Req() req: RawBodyRequest<Request>,
-    @Headers('stripe-signature') sig: string,
+    @Headers('stripe-signature') sig: string | undefined,
   ) {
-    if (!sig) throw new BadRequestException('Missing stripe-signature header');
+    const signature = typeof sig === 'string' ? sig.trim() : '';
+    if (!signature) throw new BadRequestException('Missing stripe-signature header');
 
     const rawBody = req.rawBody;
     if (!rawBody) throw new BadRequestException('Missing raw body');
+
+    const webhookSecret = this.stripeService.webhookSecret;
+    if (!webhookSecret) {
+      this.logger.error('STRIPE_WEBHOOK_SECRET is empty; webhook verification cannot succeed');
+      throw new BadRequestException('Webhook signing secret is not configured');
+    }
 
     // Let TypeScript infer the event type from constructEvent's return type
     let event: ReturnType<typeof this.stripeService.stripe.webhooks.constructEvent>;
     try {
       event = this.stripeService.stripe.webhooks.constructEvent(
         rawBody,
-        sig,
-        this.stripeService.webhookSecret,
+        signature,
+        webhookSecret,
       );
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);

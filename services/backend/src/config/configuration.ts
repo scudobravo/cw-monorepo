@@ -21,8 +21,9 @@ export default () => ({
   },
 
   stripe: {
-    secretKey: process.env.STRIPE_SECRET_KEY ?? '',
-    webhookSecret: process.env.STRIPE_WEBHOOK_SECRET ?? '',
+    secretKey: (process.env.STRIPE_SECRET_KEY ?? '').trim(),
+    // Trim: trailing newlines when pasting from Stripe Dashboard / hosting env UIs break HMAC verification.
+    webhookSecret: (process.env.STRIPE_WEBHOOK_SECRET ?? '').trim(),
   },
 
   resend: {
