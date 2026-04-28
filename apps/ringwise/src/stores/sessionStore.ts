@@ -66,14 +66,20 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
       set({ session, state: session.state, isLoading: false });
       const token = useAuthStore.getState().token();
       if (token) {
-        await tauri.startAudioPipeline(session.id, token, transcriptionWsUrl());
-        const unlisten = await listen<{ session_id: string }>(
-          "backend_session_ready",
-          (e) => {
+        const [unlistenReady, unlistenError] = await Promise.all([
+          listen<{ session_id: string }>("backend_session_ready", (e) => {
             set({ remoteSessionId: e.payload.session_id });
-          },
-        );
+          }),
+          listen<{ message: string }>("backend_session_error", (e) => {
+            set({ error: e.payload.message, isLoading: false });
+          }),
+        ]);
+        const unlisten = () => {
+          unlistenReady();
+          unlistenError();
+        };
         set({ backendSessionUnlisten: unlisten });
+        await tauri.startAudioPipeline(session.id, token, transcriptionWsUrl());
       }
     } catch (e) {
       set({ error: String(e), isLoading: false });

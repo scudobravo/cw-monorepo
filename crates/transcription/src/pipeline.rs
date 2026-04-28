@@ -100,6 +100,16 @@ struct SuggestionData {
 
 // ── Public API ─────────────────────────────────────────────────
 
+/// Messages the pipeline sends back to the Tauri command layer via the
+/// `backend_session_tx` channel.
+#[derive(Debug, Clone)]
+pub enum BackendMsg {
+    /// Backend acknowledged the session and assigned a DB id.
+    SessionReady(String),
+    /// Backend rejected the session (auth, usage limit, etc.).
+    Error(String),
+}
+
 #[derive(Clone)]
 pub struct SuggestionFromServer {
     pub id: String,
@@ -153,7 +163,7 @@ impl TranscriptionPipeline {
     pub async fn start(
         &self,
         mut audio_rx: mpsc::Receiver<(Vec<f32>, u32)>,
-        backend_session_tx: Option<mpsc::Sender<String>>,
+        backend_session_tx: Option<mpsc::Sender<BackendMsg>>,
     ) -> Result<
         (
             broadcast::Receiver<TranscriptSegment>,
@@ -375,7 +385,7 @@ async fn handle_server_message(
     suggestion_tx: &broadcast::Sender<SuggestionFromServer>,
     competitor_tx: &broadcast::Sender<CompetitorCardPayload>,
     silence_tx: &broadcast::Sender<SilenceDetectedPayload>,
-    backend_session_tx: &Option<mpsc::Sender<String>>,
+    backend_session_tx: &Option<mpsc::Sender<BackendMsg>>,
 ) {
     match msg.event.as_str() {
         "transcript_segment" => {
@@ -432,14 +442,34 @@ async fn handle_server_message(
         "session_ready" => {
             if let Some(id) = msg.data.get("sessionId").and_then(|v| v.as_str()) {
                 if let Some(tx) = backend_session_tx.as_ref() {
-                    let _ = tx.try_send(id.to_string());
+                    let _ = tx.send(BackendMsg::SessionReady(id.to_string())).await;
                 }
             }
             info!("Session ready confirmed by backend");
         }
         "error" => {
-            let m = msg.data["message"].as_str().unwrap_or("unknown");
+            let m = msg
+                .data
+                .get("message")
+                .and_then(|v| v.as_str())
+                .unwrap_or("Unknown server error")
+                .to_string();
             error!("Server error: {}", m);
+            if let Some(tx) = backend_session_tx.as_ref() {
+                let _ = tx.send(BackendMsg::Error(m)).await;
+            }
+        }
+        "usage_limit" => {
+            let m = msg
+                .data
+                .get("message")
+                .and_then(|v| v.as_str())
+                .unwrap_or("Usage limit reached")
+                .to_string();
+            warn!("Usage limit: {}", m);
+            if let Some(tx) = backend_session_tx.as_ref() {
+                let _ = tx.send(BackendMsg::Error(m)).await;
+            }
         }
         other => debug!("Unhandled server event: {}", other),
     }

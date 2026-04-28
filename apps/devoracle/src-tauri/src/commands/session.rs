@@ -3,7 +3,7 @@ use cw_audio_capture::capture::{start_capture, AudioChunk};
 use cw_core::{
     AppError, SessionInfo, SessionMode, SessionState, SessionSummary, Speaker, VocalMetrics,
 };
-use cw_transcription::pipeline::TranscriptionPipeline;
+use cw_transcription::pipeline::{BackendMsg, TranscriptionPipeline};
 use serde::Serialize;
 use tauri::{AppHandle, Emitter, State};
 use tokio::sync::{broadcast::error::RecvError, mpsc};
@@ -153,11 +153,16 @@ pub async fn start_audio_pipeline(
     let (audio_tx, audio_rx) = mpsc::channel::<(Vec<f32>, u32)>(64);
     let audio_tx_bridge = audio_tx.clone();
     let rt_handle = tokio::runtime::Handle::current();
+    let app_capture = app.clone();
     let bridge = std::thread::spawn(move || {
         let (mut cap_rx, capture) = match start_capture(None) {
             Ok(v) => v,
             Err(e) => {
                 tracing::error!("start_capture failed: {}", e);
+                let _ = app_capture.emit(
+                    "backend_session_error",
+                    serde_json::json!({ "message": format!("Microphone capture failed: {e}") }),
+                );
                 return;
             }
         };
@@ -172,7 +177,7 @@ pub async fn start_audio_pipeline(
         });
     });
 
-    let (backend_tx, mut backend_rx) = mpsc::channel::<String>(4);
+    let (backend_tx, mut backend_rx) = mpsc::channel::<BackendMsg>(4);
     let (mut transcript_rx, mut suggestion_rx, mut competitor_rx, mut silence_rx) = pipeline
         .start(audio_rx, Some(backend_tx))
         .await
@@ -180,11 +185,21 @@ pub async fn start_audio_pipeline(
 
     let app_ready = app.clone();
     tokio::spawn(async move {
-        if let Some(id) = backend_rx.recv().await {
-            let _ = app_ready.emit(
-                "backend_session_ready",
-                serde_json::json!({ "session_id": id }),
-            );
+        while let Some(msg) = backend_rx.recv().await {
+            match msg {
+                BackendMsg::SessionReady(id) => {
+                    let _ = app_ready.emit(
+                        "backend_session_ready",
+                        serde_json::json!({ "session_id": id }),
+                    );
+                }
+                BackendMsg::Error(m) => {
+                    let _ = app_ready.emit(
+                        "backend_session_error",
+                        serde_json::json!({ "message": m }),
+                    );
+                }
+            }
         }
     });
 
