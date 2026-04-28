@@ -85,19 +85,27 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
       const token = useAuthStore.getState().token();
       if (token) {
         const companySlug = get().targetCompany;
+        // Register listeners BEFORE starting the pipeline to avoid losing
+        // events that fire before the await resolves.
+        const [unlistenReady, unlistenError] = await Promise.all([
+          listen<{ session_id: string }>("backend_session_ready", (e) => {
+            set({ remoteSessionId: e.payload.session_id });
+          }),
+          listen<{ message: string }>("backend_session_error", (e) => {
+            set({ error: e.payload.message, isLoading: false });
+          }),
+        ]);
+        const unlisten = () => {
+          unlistenReady();
+          unlistenError();
+        };
+        set({ backendSessionUnlisten: unlisten });
         await tauri.startAudioPipeline(
           session.id,
           token,
           transcriptionWsUrl(),
           companySlug,
         );
-        const unlisten = await listen<{ session_id: string }>(
-          "backend_session_ready",
-          (e) => {
-            set({ remoteSessionId: e.payload.session_id });
-          },
-        );
-        set({ backendSessionUnlisten: unlisten });
       }
     } catch (e) {
       set({ error: String(e), isLoading: false });
